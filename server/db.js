@@ -11,14 +11,15 @@ var User = sequelize.define('users', {
 {
   freezeTableName: true,
   instanceMethods: {
-      generateHash: function(password) {
-          return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-      },
       validPassword: function(password) {
           return bcrypt.compareSync(password, this.password);
       },
     }
 });
+
+User.generateHash = function(password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
 
 var History = sequelize.define('histories', {
   // opponent: Sequelize.STRING, -> should be a foreign key
