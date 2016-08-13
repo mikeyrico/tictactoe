@@ -4,20 +4,23 @@ var bcrypt = require('bcrypt-nodejs');
 
 var sequelize = new Sequelize('tictactoe', 'root', '1', {logging: false});
 
-var User = sequelize.define('user', {
+var User = sequelize.define('users', {
   username: Sequelize.STRING,
-  password: {
-    type: Sequelize.STRING,
-    set: (value) => {
-      var salt = bcrypt.genSaltSync(10);
-      var hash = bcrypt.hashSync(value, salt);
-      console.log('this is >>>>>', this);
-      this.setDataValue('password', hash);
-    },
-  }
+  password: Sequelize.STRING
+},
+{
+  freezeTableName: true,
+  instanceMethods: {
+      generateHash: function(password) {
+          return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+      },
+      validPassword: function(password) {
+          return bcrypt.compareSync(password, this.password);
+      },
+    }
 });
 
-var History = sequelize.define('history', {
+var History = sequelize.define('histories', {
   // opponent: Sequelize.STRING, -> should be a foreign key
   result: Sequelize.FLOAT
 });

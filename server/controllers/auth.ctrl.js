@@ -10,7 +10,8 @@ var registerUser = function(req, res) {
       if (user) {
         return res.send(409);
       }
-      User.create({username: username, password: password})
+      var hash = User.instanceMethods.generateHash(password);
+      User.create({username: username, password: hash})
         .then((user) => {
           res.send(user);
         });
