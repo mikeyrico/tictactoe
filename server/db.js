@@ -1,11 +1,20 @@
 'use strict'
 var Sequelize = require('sequelize');
+var bcrypt = require('bcrypt-nodejs');
 
 var sequelize = new Sequelize('tictactoe', 'root', '1', {logging: false});
 
 var User = sequelize.define('user', {
   username: Sequelize.STRING,
-  password: Sequelize.STRING
+  password: {
+    type: Sequelize.STRING,
+    set: (value) => {
+      var salt = bcrypt.genSaltSync(10);
+      var hash = bcrypt.hashSync(value, salt);
+      console.log('this is >>>>>', this);
+      this.setDataValue('password', hash);
+    },
+  }
 });
 
 var History = sequelize.define('history', {

@@ -1,8 +1,9 @@
 var express = require('express');
 var app = express();
 var authRouter = require('./routers/auth.router');
+var bodyParser = require('body-parser');
 
-
+app.use(bodyParser.json());
 app.get('/', function(req, res) {
   res.send('hello world');
 });
